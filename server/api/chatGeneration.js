@@ -1,9 +1,9 @@
-const { Configuration, OpenAIApi} =  require("openai");
+const { Configuration, OpenAIApi} = require("openai");
+require('dotenv').config();
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
 const openai = new OpenAIApi(configuration);
 
 async function chatGenerate() {
@@ -21,4 +21,4 @@ function generatePrompt(prompt) {
     prompt[0].toUpperCase() + prompt.slice(1).toLowerCase();
   return `${capitalizedPrompt}.`;
 }
-module.exports = chatGenerate;
+module.exports = chatGenerate();

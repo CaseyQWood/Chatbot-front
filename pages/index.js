@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
 import styles from "./index.module.css";
-import chatGenerate from "./api/chatGeneration";
 import axios from "axios";
 
 export default function Home() {
@@ -12,25 +11,14 @@ export default function Home() {
     event.preventDefault();
 
     await axios.get("http://localhost:3000/").then((res) => {
-      console.log("This is Res", res);
+      console.log("This is Res", res.data);
+
+      setResult((prevResult) => [...prevResult, res.data.data]);
+      setPrompt("");
     }).catch((err) => {
       console.log(err);
     });
 
-    //await chatGenerate();
-    // try {
-    //   const response = await fetch("/", {
-    //     method: "POST",
-
-    //     body: {prompt: prompt },
-    //   });
-
-    //   const data = await response.json();
-    //   if (response.status !== 200) {
-    //     throw data.error || new Error(`Request failed with status ${response.status}`);
-    //   }
-
-    //   console.log("data-content:  " + data.content);
     //   setResult((prevResult) => [...prevResult, data.result]);
     //   setPrompt("");
     // } catch(error) {

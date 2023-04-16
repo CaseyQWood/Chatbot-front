@@ -30,7 +30,7 @@ export default async function (req, res) {
       model: "gpt-3.5-turbo",
       messages: [{role: "user", content: generatePrompt("test")}],
     });
-    console.log("completion data:  " + JSON. stringify(completion.data));
+    //console.log("completion data:  " + JSON. stringify(completion.data));
     res.status(200).json({ result: completion.data });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
