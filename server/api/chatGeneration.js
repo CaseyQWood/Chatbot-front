@@ -6,11 +6,12 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function chatGenerate() {
+async function chatGenerate(prompt) {
+  console.log("prompt: ", prompt)
 
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: [{role: "user", content: generatePrompt("test")}]
+    messages: [{role: "user", content: generatePrompt(prompt || "test")}]
   });
   console.log("completion: ", completion.data.choices[0].message.content)
   return completion.data.choices[0].message.content
@@ -21,4 +22,4 @@ function generatePrompt(prompt) {
     prompt[0].toUpperCase() + prompt.slice(1).toLowerCase();
   return `${capitalizedPrompt}.`;
 }
-module.exports = chatGenerate();
+module.exports = {chatGenerate}
