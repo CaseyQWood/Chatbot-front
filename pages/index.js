@@ -23,28 +23,29 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
+        <title>Nueman penTest</title>
         <link rel="icon" href="/dog.png" />
       </Head>
 
       <main className={styles.main}>
-        <img src="/dog.png" className={styles.icon} />
-        <h3>Name my pet</h3>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="topic"
-            placeholder="Enter topic"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-          <input type="submit" value="Generate conversation" />
-        </form>
+        <img src="/nueman.jpeg" className={styles.icon} />
+        <h3>Nueman</h3>
+        
         {result.map((x, index) => (
           <div key={index} className={styles.result}>
             {x}
           </div>
         ))}
+        <form onSubmit={onSubmit}>
+          <input
+            type="text"
+            name="topic"
+            placeholder="Enter prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
+          <input type="submit" value="Generate conversation" />
+        </form>
       </main>
     </div>
   );

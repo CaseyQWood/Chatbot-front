@@ -6,20 +6,16 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function chatGenerate(prompt) {
-  console.log("prompt: ", prompt)
+async function chatGenerate(contextualPrompt) {
+  if (!contextualPrompt) return "please enter a valid prompt"
+  console.log("inside Generate: ", contextualPrompt)
 
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: [{role: "user", content: generatePrompt(prompt || "test")}]
+    messages : contextualPrompt,
   });
-  console.log("completion: ", completion.data.choices[0].message.content)
+
   return completion.data.choices[0].message.content
 }
 
-function generatePrompt(prompt) {
-  const capitalizedPrompt =
-    prompt[0].toUpperCase() + prompt.slice(1).toLowerCase();
-  return `${capitalizedPrompt}.`;
-}
 module.exports = {chatGenerate}
