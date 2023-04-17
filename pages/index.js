@@ -3,6 +3,10 @@ import { useState } from "react";
 import styles from "./index.module.css";
 import axios from "axios";
 
+const options = {
+  headers: {"Access-Control-Allow-Origin": "*", }
+};
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
@@ -10,7 +14,7 @@ export default function Home() {
   async function onSubmit(event) {
     event.preventDefault();
 
-    await axios.get("http://localhost:3000/").then((res) => {
+    await axios.post("http://localhost:3000/").then((res) => {
       console.log("This is Res", res.data);
 
       setResult((prevResult) => [...prevResult, res.data.data]);
@@ -18,14 +22,6 @@ export default function Home() {
     }).catch((err) => {
       console.log(err);
     });
-
-    //   setResult((prevResult) => [...prevResult, data.result]);
-    //   setPrompt("");
-    // } catch(error) {
-    //   // Consider implementing your own error handling logic here
-    //   console.error(error);
-    //   alert(error.message);
-    // }
   }
 
   return (
