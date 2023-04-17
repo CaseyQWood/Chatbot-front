@@ -8,7 +8,7 @@ const openai = new OpenAIApi(configuration);
 
 async function chatGenerate(contextualPrompt) {
   if (!contextualPrompt) return "please enter a valid prompt"
-  console.log("inside Generate: ", contextualPrompt)
+  //console.log("inside Generate: ", contextualPrompt)
 
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",

@@ -46,7 +46,7 @@ app.post('/', (req, res, next) => {
     let newResponse = {role: "assistant", content: data};
     promptContext.push(newResponse);
 
-    console.log("promptContext:  ", promptContext)
+    //console.log("promptContext:  ", promptContext)
     return res.send({data: data});
   });
 })

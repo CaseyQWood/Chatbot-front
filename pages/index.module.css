@@ -37,6 +37,7 @@
   margin: 16px 0 40px;
 }
 .main form {
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   width: 320px;
@@ -63,6 +64,15 @@
 }
 .main input[type="submit"]:hover {
   background-color: #0f8e6e;
+}
+.main input[type="loading"] {
+  padding: 12px 0;
+  color: #fff;
+  background-color: #0f8e6e;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
 }
 .main .result {
   font-weight: bold;

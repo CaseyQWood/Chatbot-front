@@ -6,15 +6,23 @@ import axios from "axios";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
 
-    await axios.post("http://localhost:3000/", {"prompt": prompt}, {"Content-Type": "application/json"}).then((res) => {
-      console.log("This is Res", res.data);
+    if (loading) return;
+    console.log("loading: ", loading)
+    setLoading(true);
 
-      setResult((prevResult) => [...prevResult, res.data.data]);
-      setPrompt("");
+    await axios.post(
+      "http://localhost:3000/",
+      {"prompt": prompt},
+      {"Content-Type": "application/json"})
+      .then((res) => {
+        setResult((prevResult) => [...prevResult, res.data.data]);
+        setPrompt("");
+        setLoading(false);
     }).catch((err) => {
       console.log(err);
     });
@@ -44,7 +52,7 @@ export default function Home() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
           />
-          <input type="submit" value="Generate conversation" />
+          <input type={loading ? "loading" : "submit"} value={loading ? "Loading" : "Generate response"} />
         </form>
       </main>
     </div>
