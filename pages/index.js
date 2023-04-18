@@ -16,9 +16,10 @@ export default function Home() {
     setLoading(true);
 
     await axios.post(
-      "http://localhost:3000/",
+      "normal-visitor-production.up.railway.app/api",
       {"prompt": prompt},
-      {"Content-Type": "application/json"})
+      {"Content-Type": "application/json",
+      'Access-Control-Allow-Origin': '*',})
       .then((res) => {
         setResult((prevResult) => [...prevResult, res.data.data]);
         setPrompt("");
