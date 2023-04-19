@@ -7,6 +7,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -16,11 +17,12 @@ export default function Home() {
     setLoading(true);
 
     await axios.post(
-      "normal-visitor-production.up.railway.app/api",
-      {"prompt": prompt},
+      "http://localhost:3000/",
+      {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
+        console.log("Res Data", res.data)
         setResult((prevResult) => [...prevResult, res.data.data]);
         setPrompt("");
         setLoading(false);
@@ -29,6 +31,19 @@ export default function Home() {
     });
   }
 
+  async function NewSession() {
+    await axios.get(
+      "http://localhost:3000/newSesion",
+      {"Content-Type": "application/json",
+      'Access-Control-Allow-Origin': '*',})
+      .then((res) => {
+        setSessionId(res.data.data.id);
+    }).catch((err) => {
+      console.log(err);
+    });
+
+  }
+  
   return (
     <div>
       <Head>
@@ -42,9 +57,10 @@ export default function Home() {
         
         {result.map((x, index) => (
           <div key={index} className={styles.result}>
-            {x}
+            {x.content}
           </div>
         ))}
+        {sessionId ?
         <form onSubmit={onSubmit}>
           <input
             type="text"
@@ -52,9 +68,12 @@ export default function Home() {
             placeholder="Enter prompt"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-          />
+          />          
           <input type={loading ? "loading" : "submit"} value={loading ? "Loading" : "Generate response"} />
         </form>
+        :
+        <button className="button1" onClick={NewSession}>New Session</button>
+        }
       </main>
     </div>
   );
