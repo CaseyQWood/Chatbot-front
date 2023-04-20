@@ -13,12 +13,23 @@ export default function Home() {
   async function onSubmit(event) {
     event.preventDefault();
 
+
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/hello`,
+      {"Content-Type": "application/json",
+      'Access-Control-Allow-Origin': '*',})
+      .then((res) => {
+        return console.log("Res Data", res.data)
+    }).catch((err) => {
+      console.log(err);
+    });
+
     if (loading) return;
-    console.log("loading: ", loading)
+    console.log("process.env.NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL)
     setLoading(true);
 
     await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/`,
+      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
       {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
