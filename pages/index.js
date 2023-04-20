@@ -46,7 +46,7 @@ export default function Home() {
   async function NewSession() {
 
     await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
+      `/newSession`,
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
