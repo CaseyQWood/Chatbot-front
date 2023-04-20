@@ -12,24 +12,12 @@ export default function Home() {
   const [sessionId, setSessionId] = useState(false);
 
   async function onSubmit(event) {
-    event.preventDefault();
-
-    await axios.get(
-      `${NEXT_PUBLIC_API_URL}/hello`,
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        console.log("Res Data", res.data)
-    }).catch((err) => {
-      console.log(err);
-    });
-
     if (loading) return;
-    console.log("process.env.NEXT_PUBLIC_API_URL", NEXT_PUBLIC_API_URL)
+    event.preventDefault();
     setLoading(true);
 
     await axios.post(
-      `${NEXT_PUBLIC_API_URL}/generate`,
+      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
       {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
@@ -44,9 +32,9 @@ export default function Home() {
   }
 
   async function NewSession() {
-
     await axios.get(
-      `/newSession`,
+      `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
+      {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
