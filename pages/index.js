@@ -14,22 +14,8 @@ export default function Home() {
   async function onSubmit(event) {
     event.preventDefault();
 
-
-    // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/hello`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //   },
-    // })
-    // .then((res) => {
-    //   return console.log("Res Data", res.data)
-    // }).catch((err) => {
-    //   return console.log(err);
-    // });
-
     await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/hello`,
+      `${NEXT_PUBLIC_API_URL}/hello`,
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
@@ -39,30 +25,11 @@ export default function Home() {
     });
 
     if (loading) return;
-    console.log("process.env.NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL)
+    console.log("process.env.NEXT_PUBLIC_API_URL", NEXT_PUBLIC_API_URL)
     setLoading(true);
 
-    // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //   },
-    //   body: JSON.stringify({"id": sessionId, "prompt": prompt}),
-    // })
-    // .then((res) => {
-    //   console.log("Res Data", res.data)
-    //   setResult((prevResult) => [...prevResult, res.data.data]);
-    //   setPrompt("");
-    //   setLoading(false);
-    //   return
-    // }).catch((err) => {
-    //   return console.log(err);
-    // });
-
-
     await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+      `${NEXT_PUBLIC_API_URL}/generate`,
       {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
@@ -77,22 +44,6 @@ export default function Home() {
   }
 
   async function NewSession() {
-    // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newSession`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //   },
-    // })
-    // .then((res) => {
-    //   console.log("Res Data", res.data)
-    //   setSessionId(res.data.data.id);
-    //   return 
-    // }).catch((err) => {
-    //   return console.log(err);
-    // });
-
-
 
     await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
