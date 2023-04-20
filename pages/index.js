@@ -1,7 +1,8 @@
 import Head from "next/head";
 import { useState } from "react";
 import styles from "./index.module.css";
-import axios from "axios";
+//import axios from "axios";
+const axios = require('axios');
 
 
 export default function Home() {
