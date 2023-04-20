@@ -3,6 +3,7 @@ import { useState } from "react";
 import styles from "./index.module.css";
 import axios from "axios";
 
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
@@ -17,7 +18,7 @@ export default function Home() {
     setLoading(true);
 
     await axios.post(
-      "http://localhost:3000/",
+      `${process.env.NEXT_PUBLIC_API_URL}/`,
       {"id": sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
@@ -33,7 +34,7 @@ export default function Home() {
 
   async function NewSession() {
     await axios.get(
-      "http://localhost:3000/newSesion",
+      `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
@@ -43,7 +44,7 @@ export default function Home() {
     });
 
   }
-  
+
   return (
     <div>
       <Head>
