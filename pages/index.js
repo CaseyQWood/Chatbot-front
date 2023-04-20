@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "./index.module.css";
 //import axios from "axios";
-const axios = require('axios');
+//const axios = require('axios');
 
 
 export default function Home() {
@@ -15,45 +15,92 @@ export default function Home() {
     event.preventDefault();
 
 
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/hello`,
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        return console.log("Res Data", res.data)
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/hello`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+    .then((res) => {
+      console.log("Res Data", res.data)
     }).catch((err) => {
       console.log(err);
     });
+
+    // await axios.get(
+    //   `${process.env.NEXT_PUBLIC_API_URL}/hello`,
+    //   {"Content-Type": "application/json",
+    //   'Access-Control-Allow-Origin': '*',})
+    //   .then((res) => {
+    //     return console.log("Res Data", res.data)
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
 
     if (loading) return;
     console.log("process.env.NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL)
     setLoading(true);
 
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
-      {"id": sessionId, "prompt": prompt},
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        console.log("Res Data", res.data)
-        setResult((prevResult) => [...prevResult, res.data.data]);
-        setPrompt("");
-        setLoading(false);
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify({"id": sessionId, "prompt": prompt}),
+    })
+    .then((res) => {
+      console.log("Res Data", res.data)
+      setResult((prevResult) => [...prevResult, res.data.data]);
+      setPrompt("");
+      setLoading(false);
     }).catch((err) => {
       console.log(err);
     });
+
+
+    // await axios.post(
+    //   `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+    //   {"id": sessionId, "prompt": prompt},
+    //   {"Content-Type": "application/json",
+    //   'Access-Control-Allow-Origin': '*',})
+    //   .then((res) => {
+    //     console.log("Res Data", res.data)
+    //     setResult((prevResult) => [...prevResult, res.data.data]);
+    //     setPrompt("");
+    //     setLoading(false);
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
   }
 
   async function NewSession() {
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        setSessionId(res.data.data.id);
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newSession`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+    .then((res) => {
+      console.log("Res Data", res.data)
+      setSessionId(res.data.data.id);
     }).catch((err) => {
       console.log(err);
     });
+
+
+
+    // await axios.get(
+    //   `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
+    //   {"Content-Type": "application/json",
+    //   'Access-Control-Allow-Origin': '*',})
+    //   .then((res) => {
+    //     setSessionId(res.data.data.id);
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
 
   }
 
