@@ -19,7 +19,7 @@ export default function Home() {
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
-        return console.log("Res Data", res.data)
+        console.log("Res Data", res.data)
     }).catch((err) => {
       console.log(err);
     });
