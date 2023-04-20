@@ -2,14 +2,15 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "./index.module.css";
 import axios from "axios";
-//const axios = require('axios');
-
+import { CookiesProvider} from "react-cookie";
+import { useCookies } from "react-cookie";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState(false);
+  const [cookies, setCookie] = useCookies(["sessionId"]);
 
   async function onSubmit(event) {
     if (loading) return;
@@ -18,7 +19,7 @@ export default function Home() {
 
     await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/generate`,
-      {"id": sessionId, "prompt": prompt},
+      {"id": cookies.sessionId, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
@@ -31,6 +32,10 @@ export default function Home() {
     });
   }
 
+  async function onGuess(event) {
+    console.log("Guessing")
+  }
+
   async function NewSession() {
     await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
@@ -39,6 +44,8 @@ export default function Home() {
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
         setSessionId(res.data.data.id);
+        setCookie("sessionId", res.data.data.id, {path: "/"});
+
     }).catch((err) => {
       console.log(err);
     });
@@ -52,6 +59,7 @@ export default function Home() {
         <link rel="icon" href="/dog.png" />
       </Head>
 
+    <CookiesProvider>
       <main className={styles.main}>
         <img src="/nueman.jpeg" className={styles.icon} />
         <h3>Nueman</h3>
@@ -75,7 +83,11 @@ export default function Home() {
         :
         <button className="button1" onClick={NewSession}>New Session</button>
         }
+        <form onSubmit={onGuess}>
+          <input></input>
+        </form>
       </main>
+      </CookiesProvider>
     </div>
   );
 }
