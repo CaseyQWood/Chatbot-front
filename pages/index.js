@@ -1,9 +1,11 @@
 import Head from "next/head";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import styles from "./index.module.css";
 import axios from "axios";
 import { CookiesProvider} from "react-cookie";
 import { useCookies} from "react-cookie";
+import ColorSubmissionField from "../components/colorSubmissionField";
+import { winQuery } from "../queries";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -11,7 +13,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState(false);
   const [cookies, setCookie] = useCookies(["sessionId"]);
-  const [guess, setGuess] = useState("");
+  const [winCondition, setWinCondition] = useState(false);
+
+  if (winCondition) {
+    console.log("win confirmed")  
+    winQuery(cookies.sessionId);
+  }
 
   async function onSubmit(event) {
     if (loading) return;
@@ -33,31 +40,23 @@ export default function Home() {
     });
   }
 
-  async function onGuess(event) {
-    event.preventDefault();
-    console.log("Guess: ", guess)
-    console.log("Chosen Color: ", process.env.NEXT_PUBLIC_CHOSEN_COLOR)
-    if (process.env.NEXT_PUBLIC_CHOSEN_COLOR == guess) {
-      console.log("Correct!")
-    }
-  }
-
   async function NewSession() {
     setCookie("sessionId", "", {path: "/"});
+    const chosenColor = process.env.NEXT_PUBLIC_CHOSEN_COLOR;
 
     await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
-      {"chosenColor": process.env.NEXT_PUBLIC_CHOSEN_COLOR},
+      {chosenColor},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
-        setSessionId(res.data.data.id);
-        setCookie("sessionId", res.data.data.id, {path: "/"});
+        let id = res.data.data.id;
+        setSessionId(id);
+        setCookie("sessionId", id, {path: "/"});
       }
     ).catch((err) => {
       console.log(err);
     });
-
   }
 
   return (
@@ -72,11 +71,14 @@ export default function Home() {
         <img src="/nueman.jpeg" className={styles.icon} />
         <h3>Nueman</h3>
         
-        {result.map((x, index) => (
-          <div key={index} className={styles.result}>
-            {x.content}
-          </div>
-        ))}
+        <Suspense fallback={<div>Loading...</div>}>
+          {result.map((x, index) => (
+            <div key={index} className={styles.result}>
+              {x.content}
+            </div>
+          ))}
+        </Suspense>
+
         {sessionId ?
         <>
         <form onSubmit={onSubmit}>
@@ -89,19 +91,10 @@ export default function Home() {
           />          
           <input type={loading ? "loading" : "submit"} value={loading ? "Loading" : "Generate response"} />
         </form>
-        <form onSubmit={onGuess}>
-          <input
-            type="text"
-            name="guess"
-            placeholder="Enter color"
-            value={guess}
-            onChange={(e) => setGuess(e.target.value)}
-            ></input>
-          <button type="guess" className="button1">Guess</button>
-        </form>
+        <ColorSubmissionField onWin={setWinCondition}/>
         </>
         :
-        <button className="button1" onClick={NewSession}>New Session</button>
+        <button type="start" onClick={NewSession}>New Session</button>
         }
 
       </main>

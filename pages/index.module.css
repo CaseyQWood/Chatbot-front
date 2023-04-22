@@ -50,15 +50,21 @@
   width: 320px;
 }
 
-.main button[type="guess"] {
-  width: 10rem;
+.main button {
+  width: 12rem;
   padding: 12px 0;
-  color: black;
-  background-color: #a39710;
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
+}
+.main button[type="guess"] {
+  color: black;
+  background-color: #a39710;
+}
+.main button[type="start"] {
+  color: black;
+  background-color: #10a312;
 }
 
 .main input[type="text"] {
@@ -74,6 +80,7 @@
 }
 
 .main input[type="submit"] {
+  width: 65%;
   padding: 12px 0;
   color: #fff;
   background-color: #10a37f;
@@ -99,6 +106,16 @@
   padding: 12px 0;
   color: #00000045;
   background-color: #a39710;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.main input[type="wrong"] {
+  padding: 12px 0;
+  color: #00000045;
+  background-color: #a31010;
   border: none;
   border-radius: 4px;
   text-align: center;

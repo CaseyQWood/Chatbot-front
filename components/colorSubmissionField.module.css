@@ -1,0 +1,57 @@
+@font-face {
+  font-family: "ColfaxAI";
+  src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2)
+      format("woff2"),
+    url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff) format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ColfaxAI";
+  src: url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff2) format("woff2"),
+    url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff) format("woff");
+  font-weight: bold;
+  font-style: normal;
+}
+
+.form,
+.form {
+  border-top-style: dotted;
+  border-top-width: 1px;
+  border-top-color: #e0e0e0;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
+}
+
+.form input[type="text"] {
+  padding: 12px 16px;
+  border: 1px solid #10a37f;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  outline-color: #10a37f;
+}
+
+.form button[type="guess"] {
+  width: 10rem;
+  padding: 12px 0;
+  color: black;
+  background-color: #a39710;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.form button[type="wrong"] {
+  width: 10rem;
+  padding: 12px 0;
+  color: black;
+  background-color: #a31010;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
