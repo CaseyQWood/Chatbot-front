@@ -1,24 +1,34 @@
 import styles from "./colorSubmissionField.module.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ColorSubmissionField(props) {
   const [guess, setGuess] = useState("");
+  const [name, setName] = useState("");
   const [correct, setCorrect] = useState(null);
+
+
+  useEffect(() => {
+    let winObj = {win: correct, name};
+    console.log("win Object: ", winObj);
+
+    props.onWin(winObj);
+  }, [correct])
 
   async function onGuess(event) {
     event.preventDefault();
     const answerNormalized = process.env.NEXT_PUBLIC_CHOSEN_COLOR.toLocaleLowerCase()
     const guessNormalized = guess.toLocaleLowerCase()
-    
+    console.log(
+      "answerNormalized: ", answerNormalized,
+      " \nguessNormalized: ", guessNormalized
+    )
     if (answerNormalized !== guessNormalized) {
       setCorrect(false);
       setTimeout(() => setCorrect(null), 1000);
       return
     }
-
-    setCorrect(true);
-    console.log("props: ", props);
-    props.onWin(true);
+    //console.log("correct pre: ", correct)
+    setCorrect(true)
     return
   }
 
@@ -28,6 +38,13 @@ export default function ColorSubmissionField(props) {
       correct ? <h2>CORRECT!</h2>
         :
         <form className={styles.form} onSubmit={onGuess}>
+          <input
+            type="text"
+            name="name" 
+            placeholder="Enter username"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            ></input>
           <input
             type="text"
             name="guess"

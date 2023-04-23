@@ -17,56 +17,26 @@
 
 
 .main,
+.main {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 4fr auto 4fr;
+  grid-template-areas: 
+    "scoreboard hero guess"
+    ". results ."
+    ". form .";
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+
 .main input {
+  width: auto;
   font-size: 16px;
   line-height: 24px;
   color: #353740;
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
-.main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-}
-.main .icon {
-  width: 25%;
-}
-.main h3 {
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: bold;
-  color: #202123;
-  margin: 16px 0 40px;
-}
-.main form {
-  border-top-style: dotted;
-  border-top-width: 1px;
-  border-top-color: #e0e0e0;
-  margin-top: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 320px;
-}
-
-.main button {
-  width: 12rem;
-  padding: 12px 0;
-  border: none;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-}
-.main button[type="guess"] {
-  color: black;
-  background-color: #a39710;
-}
-.main button[type="start"] {
-  color: black;
-  background-color: #10a312;
-}
-
 .main input[type="text"] {
   padding: 12px 16px;
   border: 1px solid #10a37f;
@@ -74,13 +44,7 @@
   margin-bottom: 24px;
   outline-color: #10a37f;
 }
-.main ::placeholder {
-  color: #8e8ea0;
-  opacity: 1;
-}
-
 .main input[type="submit"] {
-  width: 65%;
   padding: 12px 0;
   color: #fff;
   background-color: #10a37f;
@@ -101,7 +65,6 @@
   text-align: center;
   cursor: pointer;
 }
-
 .main input[type="guess"] {
   padding: 12px 0;
   color: #00000045;
@@ -111,7 +74,6 @@
   text-align: center;
   cursor: pointer;
 }
-
 .main input[type="wrong"] {
   padding: 12px 0;
   color: #00000045;
@@ -122,8 +84,85 @@
   cursor: pointer;
 }
 
+.hero {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-area: hero;
+}
+
+.main .icon {
+  width: 60%;
+}
+.main h3 {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: bold;
+  color: #202123;
+  margin: 16px 0 40px;
+}
+
+.main form {
+  height: 100%;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+}
+.form {
+  grid-area: form;
+  display: grid;
+  justify-content: center;
+  height: 100%;
+}
+
+.main button {
+  width: 12rem;
+  padding: 12px 0;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  height: 15%;
+}
+.main button[type="guess"] {
+  color: black;
+  background-color: #a39710;
+}
+.main button[type="start"] {
+  color: black;
+  background-color: #10a312;
+}
+
+
+.main ::placeholder {
+  color: #8e8ea0;
+  opacity: 1;
+}
+
+
+
 
 .main .result {
   font-weight: bold;
   margin-top: 40px;
 }
+
+.scoreboard {
+  grid-area: scoreboard;
+}
+
+.color-picker {
+  grid-area: color-picker;
+}
+
+.results {
+  grid-area: results;
+}
+
+.guess {
+  grid-area: guess;
+}
+

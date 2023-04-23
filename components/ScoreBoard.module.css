@@ -1,0 +1,24 @@
+
+
+.section,
+.section {
+  display: grid;
+  grid-template-rows: 1.5fr 8.5fr;
+  height: 100%;
+}
+
+.section ul {
+ padding: 0;
+ height: fit-content;
+}
+
+.section h2 {
+  margin: 0;
+  width: 60%;
+  height: 30%;
+}
+
+.lineItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}

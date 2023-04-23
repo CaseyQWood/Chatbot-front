@@ -1,46 +1,38 @@
 import Head from "next/head";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import axios from "axios";
 import { CookiesProvider} from "react-cookie";
 import { useCookies} from "react-cookie";
+import { winQuery, getWinners } from "../queries";
+import ScoreBoard from "../components/ScoreBoard";
+import ChatForms from "../components/ChatForms";
 import ColorSubmissionField from "../components/colorSubmissionField";
-import { winQuery } from "../queries";
 
 export default function Home() {
-  const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState(false);
   const [cookies, setCookie] = useCookies(["sessionId"]);
-  const [winCondition, setWinCondition] = useState(false);
+  const [winCondition, setWinCondition] = useState();
+  const [winners, setWinners] = useState([]);
 
-  if (winCondition) {
+  if (winCondition && winCondition.win) {
     console.log("win confirmed")  
-    winQuery(cookies.sessionId);
-  }
+    winQuery(cookies.sessionId, winCondition.name).then((res) => {
+      console.log("win query res: ", res);
 
-  async function onSubmit(event) {
-    if (loading) return;
-    event.preventDefault();
-    setLoading(true);
-
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
-      {"id": cookies.sessionId, "prompt": prompt},
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        console.log("Res Data", res.data)
-        setResult((prevResult) => [...prevResult, res.data.data]);
-        setPrompt("");
-        setLoading(false);
-    }).catch((err) => {
-      console.log(err);
+      getWinners().then((res) => {
+        console.log("Get Winners Res: ", res)
+        setWinners(res);
+        setWinCondition(null);
+      })
     });
+
+    //setWinners(getWinners());
   }
 
-  async function NewSession() {
+  async function newSession() {
+    console.log("new session")
     setCookie("sessionId", "", {path: "/"});
     const chosenColor = process.env.NEXT_PUBLIC_CHOSEN_COLOR;
 
@@ -59,6 +51,14 @@ export default function Home() {
     });
   }
 
+  useEffect(() => {
+    getWinners().then((res) => {
+      console.log("res: ", res)
+      setWinners(res);
+    })
+  }, []);
+
+
   return (
     <div>
       <Head>
@@ -68,35 +68,30 @@ export default function Home() {
 
     <CookiesProvider>
       <main className={styles.main}>
-        <img src="/nueman.jpeg" className={styles.icon} />
-        <h3>Nueman</h3>
-        
+
         <Suspense fallback={<div>Loading...</div>}>
-          {result.map((x, index) => (
-            <div key={index} className={styles.result}>
-              {x.content}
-            </div>
-          ))}
+          <ScoreBoard className={styles.scoreboard} winners={winners}/>
         </Suspense>
 
-        {sessionId ?
-        <>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="topic"
-            placeholder="Enter prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />          
-          <input type={loading ? "loading" : "submit"} value={loading ? "Loading" : "Generate response"} />
-        </form>
-        <ColorSubmissionField onWin={setWinCondition}/>
-        </>
-        :
-        <button type="start" onClick={NewSession}>New Session</button>
-        }
+        <div className={styles.hero}>
+          <img src="/nueman.jpeg" className={styles.icon}/>
+          <h3>Nueman</h3>
+        </div>
 
+        <ColorSubmissionField className={styles.guess}  onWin={setWinCondition}/>
+
+        <div className={styles.results}>
+          <Suspense fallback={<div>Loading...</div>}>
+            {result.map((x, index) => (
+              <div key={index} className={styles.result}>
+                {x.content}
+              </div>
+            ))}
+          </Suspense>
+        </div>
+
+        <ChatForms className={styles.form} sessionId={sessionId} newSession={newSession} setResult={setResult} setWinCondition={setWinCondition}/>
+      
       </main>
       </CookiesProvider>
     </div>
