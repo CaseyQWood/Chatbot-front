@@ -27,8 +27,6 @@ export default function Home() {
         setWinCondition(null);
       })
     });
-
-    //setWinners(getWinners());
   }
 
   async function newSession() {
@@ -75,7 +73,7 @@ export default function Home() {
 
         <div className={styles.hero}>
           <img src="/nueman.jpeg" className={styles.icon}/>
-          <h3>Nueman</h3>
+          <h3>Dennis</h3>
         </div>
 
         <ColorSubmissionField className={styles.guess}  onWin={setWinCondition}/>
