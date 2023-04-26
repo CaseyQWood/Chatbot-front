@@ -6,11 +6,10 @@ import { CookiesProvider} from "react-cookie";
 import { useCookies} from "react-cookie";
 import { winQuery, getWinners } from "../queries";
 import ScoreBoard from "../components/ScoreBoard";
-import ChatForms from "../components/ChatForms";
 import ColorSubmissionField from "../components/colorSubmissionField";
+import ChatBox from "../components/ChatBox";
 
 export default function Home() {
-  const [result, setResult] = useState([]);
   const [sessionId, setSessionId] = useState(false);
   const [cookies, setCookie] = useCookies(["sessionId"]);
   const [winCondition, setWinCondition] = useState();
@@ -77,18 +76,8 @@ export default function Home() {
         </div>
 
         <ColorSubmissionField className={styles.guess}  onWin={setWinCondition}/>
-
-        <div className={styles.results}>
-          <Suspense fallback={<div>Loading...</div>}>
-            {result.map((x, index) => (
-              <div key={index} className={styles.result}>
-                {x.content}
-              </div>
-            ))}
-          </Suspense>
-        </div>
-
-        <ChatForms className={styles.form} sessionId={sessionId} newSession={newSession} setResult={setResult} setWinCondition={setWinCondition}/>
+        
+        <ChatBox sessionId={sessionId} newSession={newSession}/>
       
       </main>
       </CookiesProvider>

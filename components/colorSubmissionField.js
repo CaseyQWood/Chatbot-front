@@ -37,7 +37,7 @@ export default function ColorSubmissionField(props) {
       {
       correct ? <h2>CORRECT!</h2>
         :
-        <form className={styles.form} onSubmit={onGuess}>
+        <form type="checker" className={styles.form} onSubmit={onGuess}>
           <input
             type="text"
             name="name" 
