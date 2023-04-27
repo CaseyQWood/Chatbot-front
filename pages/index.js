@@ -10,6 +10,7 @@ import ColorSubmissionField from "../components/colorSubmissionField";
 import ChatBox from "../components/ChatBox";
 
 export default function Home() {
+  const [character, setCharacter] = useState("Jeff");
   const [sessionId, setSessionId] = useState(false);
   const [cookies, setCookie] = useCookies(["sessionId"]);
   const [winCondition, setWinCondition] = useState();
@@ -17,11 +18,9 @@ export default function Home() {
 
   if (winCondition && winCondition.win) {
     console.log("win confirmed")  
-    winQuery(cookies.sessionId, winCondition.name).then((res) => {
-      console.log("win query res: ", res);
+    winQuery(cookies.sessionId, winCondition.name, character).then((res) => {
 
       getWinners().then((res) => {
-        console.log("Get Winners Res: ", res)
         setWinners(res);
         setWinCondition(null);
       })
@@ -29,13 +28,14 @@ export default function Home() {
   }
 
   async function newSession() {
-    console.log("new session")
     setCookie("sessionId", "", {path: "/"});
     const chosenColor = process.env.NEXT_PUBLIC_CHOSEN_COLOR;
+    console.log("new session", chosenColor," ", character)
+
 
     await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
-      {chosenColor},
+      {chosenColor, character},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
@@ -46,14 +46,12 @@ export default function Home() {
     ).catch((err) => {
       console.log(err);
     });
-  }
 
-  useEffect(() => {
-    getWinners().then((res) => {
-      console.log("res: ", res)
+    getWinners(character).then((res) => {
+      console.log("GetWinners inside new session ", res)
       setWinners(res);
     })
-  }, []);
+  }
 
 
   return (
@@ -76,8 +74,8 @@ export default function Home() {
         </div>
 
         <ColorSubmissionField className={styles.guess}  onWin={setWinCondition}/>
-        
-        <ChatBox sessionId={sessionId} newSession={newSession}/>
+
+        <ChatBox sessionId={sessionId} character={character} setChar={setCharacter} newSession={newSession}/>
       
       </main>
       </CookiesProvider>

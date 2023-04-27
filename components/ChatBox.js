@@ -1,14 +1,27 @@
 import styles from "./ChatBox.module.css";
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";
+import DropdownSelect from "./DropDown";
 
 export default function ChatBox(props) {
   const [prompt, setPrompt] = useState("");
   const [results, setResult] = useState(["test", "test2", "test3"]);
   const [loading, setLoading] = useState(false);
   const [convo, setConvo] = useState([]);
+  const [characterList, setCharacterList] = useState([]);
 
-console.log("ChatBox: ", convo)
+  useEffect(() => {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/characters`,
+    {"Content-Type": "application/json",
+    'Access-Control-Allow-Origin': '*',})
+    .then((res) => {
+      console.log("res: ", res);
+      setCharacterList(res.data.data);
+    }).catch((err) => {
+    console.log(err);
+  });
+  }, []);
+
   async function onSubmit(event) {
     event.preventDefault();
     if (loading) return;
@@ -17,7 +30,7 @@ console.log("ChatBox: ", convo)
 
     await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/generate`,
-      {"id": props.sessionId, "prompt": prompt},
+      {"id": props.sessionId,"character": props.character, "prompt": prompt},
       {"Content-Type": "application/json",
       'Access-Control-Allow-Origin': '*',})
       .then((res) => {
@@ -30,12 +43,13 @@ console.log("ChatBox: ", convo)
     });
   }
 
+  console.log("chatacter: ", props.character)
   return (
     <section className={styles.chat}>
       {props.sessionId ?
       <>
         <div className={styles.title}>
-          <h1>Bot name</h1>
+          <h1>{props.character}</h1>
         </div>
 
         {/* /* This is the chat box */}
@@ -66,7 +80,16 @@ console.log("ChatBox: ", convo)
         </form> 
       </>
         :
-      <button type="start" onClick={() => props.newSession()}>New Session</button>
+        <div className={styles.session} >
+
+          <div>
+
+          </div>
+
+          <DropdownSelect options={characterList} setChar={props.setChar} />
+
+          <button type="start" onClick={() => props.newSession()}>New Session</button>
+        </div>
         }
     </section>
   )
