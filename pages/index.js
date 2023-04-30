@@ -1,58 +1,67 @@
 import Head from "next/head";
 import { Suspense, useEffect, useState } from "react";
 import styles from "./index.module.css";
-import axios from "axios";
 import { CookiesProvider} from "react-cookie";
 import { useCookies} from "react-cookie";
-import { winQuery, getWinners } from "../queries";
+import { winQuery, getWinners, createSessionQuery } from "../queries";
 import ScoreBoard from "../components/ScoreBoard";
 import ColorSubmissionField from "../components/colorSubmissionField";
 import ChatBox from "../components/ChatBox";
 
+
 export default function Home() {
-  const [character, setCharacter] = useState("Jeff");
-  const [sessionId, setSessionId] = useState(false);
   const [cookies, setCookie] = useCookies(["sessionId"]);
-  const [winCondition, setWinCondition] = useState();
+  const [winCondition, setWinCondition] = useState(); // contains win: true/false and name: username
   const [winners, setWinners] = useState([]);
 
-  if (winCondition && winCondition.win) {
-    console.log("win confirmed")  
-    winQuery(cookies.sessionId, winCondition.name, character).then((res) => {
+  const [sessionState, setSessionState] = useState({id: 0, character: "jeff", fav_color: "d79dj"}); // {id: 1, character: "jeff", fav_color: "red"
 
+  const updateSessionState = (newState) => {
+    // Create a shallow copy of the state, updating only the specified keys
+    const updatedState = Object.entries(newState).reduce((x, [key, value]) => {
+      if (sessionState.hasOwnProperty(key)) {
+        x[key] = value;
+      }
+      return x;
+    }, { ...sessionState });
+
+    setSessionState(updatedState);
+  };
+
+  const resetCookie = () => {
+    setCookie("sessionId", "", {path: "/"});
+  }
+
+  const resetWinCondition = () => {
+    setWinCondition(null);
+  }
+
+  useEffect(() => {
+  if (winCondition && winCondition.win) {
+    winQuery(cookies.sessionId, winCondition.name, sessionState.character)
+    .then(() => {
       getWinners().then((res) => {
+        console.log('Get Winners response: ', res);
         setWinners(res);
-        setWinCondition(null);
+        resetWinCondition();
       })
     });
   }
+  }, [winCondition])
 
-  async function newSession() {
-    setCookie("sessionId", "", {path: "/"});
-    const chosenColor = process.env.NEXT_PUBLIC_CHOSEN_COLOR;
-    console.log("new session", chosenColor," ", character)
-
-
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/newSession`,
-      {chosenColor, character},
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        let id = res.data.data.id;
-        setSessionId(id);
-        setCookie("sessionId", id, {path: "/"});
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-
-    getWinners(character).then((res) => {
-      console.log("GetWinners inside new session ", res)
+  useEffect(() => {
+    getWinners(sessionState.character).then((res) => {
       setWinners(res);
     })
-  }
+  }, [sessionState.character])
 
+
+  async function newSession() {
+    resetCookie();
+    const sessionData = await createSessionQuery(sessionState.character);
+    updateSessionState({id: sessionData.id, character: sessionState.character, fav_color: sessionData.fav_color});
+    setCookie("sessionId", sessionData.id, {path: "/"});
+  }
 
   return (
     <div>
@@ -70,12 +79,11 @@ export default function Home() {
 
         <div className={styles.hero}>
           <img src="/nueman.jpeg" className={styles.icon}/>
-          <h3>Dennis</h3>
         </div>
 
-        <ColorSubmissionField className={styles.guess}  onWin={setWinCondition}/>
+        <ColorSubmissionField className={styles.guess} favColor={sessionState.fav_color}  onWin={setWinCondition}/>
 
-        <ChatBox sessionId={sessionId} character={character} setChar={setCharacter} newSession={newSession}/>
+        <ChatBox sessionState={sessionState} setSessionState={updateSessionState} newSession={newSession}/>
       
       </main>
       </CookiesProvider>

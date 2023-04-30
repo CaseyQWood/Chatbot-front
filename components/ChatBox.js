@@ -2,21 +2,21 @@ import styles from "./ChatBox.module.css";
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";
 import DropdownSelect from "./DropDown";
+import { chatQuery, getCharacterList } from "../queries";
 
-export default function ChatBox(props) {
+
+// props = {sessionState, setsessionState, newSession}
+export default function ChatBox({sessionState, setSessionState, newSession}) {
   const [prompt, setPrompt] = useState("");
-  const [results, setResult] = useState(["test", "test2", "test3"]);
   const [loading, setLoading] = useState(false);
   const [convo, setConvo] = useState([]);
-  const [characterList, setCharacterList] = useState([]);
+  const [characterList, setCharacterList] = useState([""]);
 
   useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/characters`,
-    {"Content-Type": "application/json",
-    'Access-Control-Allow-Origin': '*',})
+  getCharacterList()
     .then((res) => {
-      console.log("res: ", res);
-      setCharacterList(res.data.data);
+      console.log("Character List: ", res)
+      setCharacterList(res);
     }).catch((err) => {
     console.log(err);
   });
@@ -28,28 +28,21 @@ export default function ChatBox(props) {
     setLoading(true);
     setConvo((prevConvo) => [...prevConvo, {role: "user", content: prompt}]);
 
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
-      {"id": props.sessionId,"character": props.character, "prompt": prompt},
-      {"Content-Type": "application/json",
-      'Access-Control-Allow-Origin': '*',})
-      .then((res) => {
-        setPrompt("");
-        setConvo((prevConvo) => [...prevConvo, res.data.data]);
-        setResult((prevResult) => [...prevResult, res.data.data]);
-        setLoading(false);
+    chatQuery(sessionState.id, sessionState.character, prompt).then((res) => {
+      setPrompt("");
+      setConvo((prevConvo) => [...prevConvo, res]);
+      setLoading(false);
     }).catch((err) => {
       console.log(err);
     });
   }
 
-  console.log("chatacter: ", props.character)
   return (
     <section className={styles.chat}>
-      {props.sessionId ?
+      {sessionState.id ?
       <>
         <div className={styles.title}>
-          <h1>{props.character}</h1>
+          <h1>{sessionState.character}</h1>
         </div>
 
         {/* /* This is the chat box */}
@@ -86,9 +79,9 @@ export default function ChatBox(props) {
 
           </div>
 
-          <DropdownSelect options={characterList} setChar={props.setChar} />
+          <DropdownSelect characterList={characterList} setSessionState={setSessionState} />
 
-          <button type="start" onClick={() => props.newSession()}>New Session</button>
+          <button type="start" onClick={() => newSession()}>New Session</button>
         </div>
         }
     </section>
